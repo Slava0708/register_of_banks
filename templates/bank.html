@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Сведения о банке {{ Bank.name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
+          crossorigin="anonymous">
+</head>
+<body>
+    <h1 style ="text-align: center">Сведения о банке {{ Bank.name }}</h1>
+    <p>Название: {{ Bank.name }}</p>
+    <p>БИК: {{ Bank.bik }}</p>
+    <p>Город: {{ Bank.city }}</p>
+    <p>Счет: {{ Bank.account }}</p>
+    <p>Дата создания записи: {{ Bank.created_at }}</p>
+    <p>Дата обновления записи: {{ Bank.update_at }}</p>
+    <form method="post">
+        {% csrf_token%}
+        <a href="banks/{{ Bank.id }}/reviews/"><input type="submit" class = "btn btn-primary" value="Оставить отзыв"></a>
+    </form>
+    <h2 style = "text-align: center">Отзывы</h2>
+    <div class = "container">
+    {% for views in Bank.review_set.all %}
+        <ul class = "list-group">
+            <h5>{{ views.username }}</h5>
+            <li class = "list-group-item">{{ views.review }}</li>
+            <p></p>
+        </ul>
+    {% endfor %}
+    </div>
+</body>
+</html>
