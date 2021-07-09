@@ -1,19 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Удаление сведений о банке {{ Bank.name }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
-          crossorigin="anonymous">
-</head>
-<body>
+{% extends "base.html" %}
+    {% block title %}Удаление сведений о банке {{ Bank.name }}{% endblock %}
+{% block content %}
     <h1>Удаление сведений о банке {{ Bank.name }}</h1>
     <form method="post">
         {% csrf_token %}
         <p>Вы действительно хотите удалить сведения о банке {{ Bank.name }}?</p>
         <input class = "btn btn-primary" type="submit" value="Удалить">
     </form>
-</body>
-</html>
+{% endblock %}

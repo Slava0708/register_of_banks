@@ -2,9 +2,8 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic.list import ListView
 from django.views.generic.edit import *
 from django.views.generic.detail import DetailView
-from . import models,forms
-from django.shortcuts import redirect, get_object_or_404
-
+from . import models, forms
+from django.shortcuts import redirect
 from .models import Bank
 
 
@@ -19,11 +18,6 @@ class BankCreateViews(CreateView):
     template_name = "adding banks.html"
     form_class = forms.BankForm
     success_url = reverse_lazy('index')
-
-    def form_valid(self, form):
-        review = models.Review().objects.get(user=self.request.user)
-        form.instance.review = review
-        return super().render_to_response(form)
 
 
 class BankUpdatesView(UpdateView):
