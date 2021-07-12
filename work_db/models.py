@@ -17,7 +17,7 @@ class Review(models.Model):
     username = models.CharField(max_length=20, verbose_name='Пользователь', blank=False)
     review = models.TextField(verbose_name='Отзыв о банке', blank=False)
     bank = models.ForeignKey('Bank', unique=False, on_delete=models.CASCADE, blank=False)
-    created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
+    created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True, blank=True)
 
     class Meta:
         ordering = ['-created_at']

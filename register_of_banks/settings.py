@@ -80,7 +80,7 @@ password = os.environ.get('password')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'DbTest',
+        'NAME': 'TestDb',
         'USER': 'postgres',
         'PASSWORD': password,
         'HOST': 'localhost',
