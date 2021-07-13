@@ -21,8 +21,3 @@ class Review(models.Model):
 
     class Meta:
         ordering = ['-created_at']
-
-
-class Files(models.Model):
-    file_field = models.FileField(upload_to='media/')
-

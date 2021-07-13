@@ -2,6 +2,7 @@ from django.db import connections
 from django.test import TestCase
 from . import forms
 from . import models
+from .services import Work_with_Banks
 
 
 class ModelBankTest(TestCase):
@@ -136,3 +137,10 @@ class ViewTest(TestCase):
     def tearDownClass(cls):
         connections.close_all()
 
+
+class ServicesTest(TestCase):
+    def test_load_archive_files(self):
+        self.assertTrue(Work_with_Banks.__load_the_archive_of_banks__(self))
+
+    def test_save_archive_files(self):
+        self.assertTrue(Work_with_Banks.__the_save_info_of_banks__(self))

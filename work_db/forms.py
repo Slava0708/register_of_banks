@@ -32,13 +32,17 @@ class BankReviews(forms.ModelForm):
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'review': forms.Textarea(attrs={'class': 'form-control'}),
         }
+        # def __init__(self, *args, **kwargs):
+        #     self.bank = kwargs.pop('bank')
+        #     super().__init__(*args, **kwargs)
+        #
+        # def save(self, commit=True):
+        #     review = super().save(commit=False)
+        #     review.bank = self.bank
+        #     review.save()
+        #     return review
 
-    # def __init__(self, *args, **kwargs):
-    #     self.bank = kwargs.pop('bank')
-    #     super().__init__(*args, **kwargs)
-    #
-    # def save(self, commit=True):
-    #     review = super().save(commit=False)
-    #     review.bank = self.bank
-    #     review.save()
-    #     return review
+
+class Files(forms.Form):
+    files = forms.FileField()
+
