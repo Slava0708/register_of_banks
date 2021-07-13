@@ -6,15 +6,28 @@ from django.conf import settings
 import zipfile
 
 
-class Work_with_Banks(object):
-    def load_the_archive_of_banks(self):
-        url = settings.URL
-        resp = requests.get('https://its.1c.ru/download/bank/download')
-        if resp.status_code != requests.codes.ok:
+class WorkWiBanks:
+
+    URL = settings.URL
+    file_name = 'bnkseek.txt'
+    media_url = 'media/'
+
+    @staticmethod
+    def getContent():
+        response = requests.get(WorkWiBanks.URL)
+        if response.status_code != requests.codes.ok:
             raise CommandError('Cannot download file')
-        content_file = ContentFile(resp.content)
-        with zipfile.ZipFile(content_file.file) as zf:
-            zf.extract('bnkseek.txt', 'media/')
+        print(response.content)
+        return response.content
+
+    @staticmethod
+    def extract_zip(content):
+        content = ContentFile(content)
+        with zipfile.ZipFile(content.file) as zf:
+            zf.extract(WorkWiBanks.file_name, WorkWiBanks.media_url)
+
+    @staticmethod
+    def saveInfoBanks():
         with open('media/bnkseek.txt', encoding='Windows-1251') as file:
             for line in file:
                 _, city, _, name, _, bik, account = line.split('\t')  # 5 - bik
@@ -25,4 +38,9 @@ class Work_with_Banks(object):
                     bik=bik,
                     account=account,
                 )
-        return True
+
+    @classmethod
+    def load_and_save_infoBank(cls):
+        content = cls.getContent()
+        cls.extract_zip(content)
+        cls.saveInfoBanks()

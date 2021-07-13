@@ -1,8 +1,11 @@
 from django.db import connections
 from django.test import TestCase
-from . import forms
-from . import models
-from .services import Work_with_Banks
+from unittest.mock import patch
+from work_db import forms
+from work_db import models
+from work_db.tests.date import test_date
+from work_db.services import WorkWiBanks
+import os
 
 
 class ModelBankTest(TestCase):
@@ -89,6 +92,7 @@ class ModelReviewTest(TestCase):
 
 
 class TestForm(TestCase):
+
     def test_BankForm_name_label(self):
         form = forms.BankForm()
         self.assertEqual(form.fields['name'].label, "Наименование")
@@ -107,6 +111,7 @@ class TestForm(TestCase):
 
 
 class ViewTest(TestCase):
+
     @classmethod
     def setUpClass(cls):
         for i in range(21):
@@ -138,9 +143,17 @@ class ViewTest(TestCase):
         connections.close_all()
 
 
-class ServicesTest(TestCase):
-    def test_load_archive_files(self):
-        self.assertTrue(Work_with_Banks.__load_the_archive_of_banks__(self))
+class WorkWiBanksTestCase(TestCase):
 
-    def test_save_archive_files(self):
-        self.assertTrue(Work_with_Banks.__the_save_info_of_banks__(self))
+    @patch('work_db.services.WorkWiBanks.getContent')
+    def test_get_content(self, mock_get_content):
+        mock_get_content.return_value = test_date.banks_date
+        counts_banks_for_start = models.Bank.objects.count()
+        WorkWiBanks.load_and_save_infoBank()
+        counts_banks_for_end = models.Bank.objects.all()
+        self.assertTrue(counts_banks_for_end.count() >= counts_banks_for_start)
+
+
+    @classmethod
+    def tearDownClass(cls):
+        os.remove('media/bnkseek.txt')
