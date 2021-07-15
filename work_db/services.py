@@ -2,16 +2,16 @@ import io
 import zipfile
 
 import requests
+
 from django.conf import settings
 from django.core.management.base import CommandError
-
 from work_db.models import Bank
 
 
 class WorkWithBanks:
 
     @staticmethod
-    def getContent():
+    def get_Content():
         response = requests.get(settings.URL)
         if response.status_code != requests.codes.ok:
             raise CommandError('Cannot download file')
@@ -19,7 +19,6 @@ class WorkWithBanks:
 
     @staticmethod
     def read_zip_bytes(content):
-        byte: bytes
         b_bytes = io.BytesIO(content)
         with zipfile.ZipFile(b_bytes) as zf:
             with zf.open('bnkseek.txt') as file:
@@ -28,7 +27,7 @@ class WorkWithBanks:
         return text
 
     @staticmethod
-    def saveInfoBanks(text):
+    def save_InfoBanks(text):
         text = text.split('\n')
         text.pop(-1)  # delete because last line text = ['']
         for line in text:
@@ -41,8 +40,8 @@ class WorkWithBanks:
                 account=account,
             )
 
-    @classmethod
-    def load_and_save_infoBank(cls):
-        content = cls.getContent()
-        text = cls.read_zip_bytes(content)
-        cls.saveInfoBanks(text)
+    @staticmethod
+    def load_and_save_infoBank():
+        content = WorkWithBanks.get_Content()
+        text = WorkWithBanks.read_zip_bytes(content)
+        WorkWithBanks.save_InfoBanks(text)

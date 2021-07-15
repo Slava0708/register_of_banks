@@ -1,7 +1,7 @@
 import io
 
-import requests
 import responses
+
 from django.conf import settings
 from django.db import connections
 from django.test import TestCase
@@ -150,10 +150,8 @@ class WorkWiBanksTestCase(TestCase):
     def test_get_content(self):
         byte = self.file.read()
         responses.add(responses.GET, self.URL, byte)
-        response = requests.get(self.URL)
-        # print(response.content)
-        self.assertTrue(responses.calls[0].request.url == self.URL)
         self.assertEqual(models.Bank.objects.count(), 0)
         WorkWithBanks.load_and_save_infoBank()
-        counts_banks_for_end = models.Bank.objects.count()
+        self.assertTrue(responses.calls[0].request.url == self.URL)
+        counts_banks_for_end = models.Bank.objects.all().count()
         self.assertEqual(counts_banks_for_end, 4)
