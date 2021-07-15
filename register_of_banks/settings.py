@@ -15,6 +15,10 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+settings_dir = os.path.dirname(__file__)
+PROJECT_ROOT = os.path.abspath(os.path.dirname(settings_dir))
+FILES_FOLDER = os.path.join(PROJECT_ROOT, 'work_db/tests')
+ARCHIVE = os.path.join(FILES_FOLDER, 'test_archive.rar')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -82,7 +86,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'TestDb',
         'USER': 'postgres',
-        'PASSWORD': password,
+        'PASSWORD': 'admin',
         'HOST': 'localhost',
         'PORT': '5432',
     }

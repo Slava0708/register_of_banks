@@ -1,11 +1,15 @@
+import io
+import os
+import zipfile
+
+import responses
+from django.conf import settings
+import requests
 from django.db import connections
 from django.test import TestCase
-from unittest.mock import patch
 from work_db import forms
 from work_db import models
-from work_db.tests.date import test_date
-from work_db.services import WorkWiBanks
-import os
+from work_db.services import WorkWithBanks
 
 
 class ModelBankTest(TestCase):
@@ -76,11 +80,6 @@ class ModelReviewTest(TestCase):
         field_label = review._meta.get_field('username').blank
         self.assertEquals(field_label, False)
 
-    def test_blank_username(self):
-        review = models.Review.objects.get(id=1)
-        field_label = review._meta.get_field('username').blank
-        self.assertEquals(field_label, False)
-
     def test_max_length_username(self):
         review = models.Review.objects.get(id=1)
         field_label = review._meta.get_field('username').max_length
@@ -144,16 +143,17 @@ class ViewTest(TestCase):
 
 
 class WorkWiBanksTestCase(TestCase):
+    path = settings.ARCHIVE
+    file = io.FileIO(path)
 
-    @patch('work_db.services.WorkWiBanks.getContent')
-    def test_get_content(self, mock_get_content):
-        mock_get_content.return_value = test_date.banks_date
-        counts_banks_for_start = models.Bank.objects.count()
-        WorkWiBanks.load_and_save_infoBank()
-        counts_banks_for_end = models.Bank.objects.all()
-        self.assertTrue(counts_banks_for_end.count() >= counts_banks_for_start)
-
-
-    @classmethod
-    def tearDownClass(cls):
-        os.remove('media/bnkseek.txt')
+    @responses.activate
+    def test_get_content(self):
+        byte = self.file.read()
+        responses.add(responses.GET, 'https://its.1c.ru/download/bank/download', byte)
+        response = requests.get('https://its.1c.ru/download/bank/download')
+        # print(response.content)
+        self.assertTrue(responses.calls[0].request.url == 'https://its.1c.ru/download/bank/download')
+        self.assertEqual(models.Bank.objects.count(), 0)
+        WorkWithBanks.load_and_save_infoBank()
+        counts_banks_for_end = models.Bank.objects.count()
+        self.assertEqual(counts_banks_for_end, 4)
