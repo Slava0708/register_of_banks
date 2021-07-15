@@ -1,17 +1,18 @@
-from work_db.models import Bank
-import requests
-from django.core.management.base import CommandError
-from django.conf import settings
-import zipfile
 import io
+import zipfile
+
+import requests
+from django.conf import settings
+from django.core.management.base import CommandError
+
+from work_db.models import Bank
 
 
 class WorkWithBanks:
-    URL = settings.URL
 
     @staticmethod
     def getContent():
-        response = requests.get('https://its.1c.ru/download/bank/download')
+        response = requests.get(settings.URL)
         if response.status_code != requests.codes.ok:
             raise CommandError('Cannot download file')
         return response.content

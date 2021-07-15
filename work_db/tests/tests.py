@@ -1,12 +1,11 @@
 import io
-import os
-import zipfile
 
+import requests
 import responses
 from django.conf import settings
-import requests
 from django.db import connections
 from django.test import TestCase
+
 from work_db import forms
 from work_db import models
 from work_db.services import WorkWithBanks
@@ -145,14 +144,15 @@ class ViewTest(TestCase):
 class WorkWiBanksTestCase(TestCase):
     path = settings.ARCHIVE
     file = io.FileIO(path)
+    URL = settings.URL
 
     @responses.activate
     def test_get_content(self):
         byte = self.file.read()
-        responses.add(responses.GET, 'https://its.1c.ru/download/bank/download', byte)
-        response = requests.get('https://its.1c.ru/download/bank/download')
+        responses.add(responses.GET, self.URL, byte)
+        response = requests.get(self.URL)
         # print(response.content)
-        self.assertTrue(responses.calls[0].request.url == 'https://its.1c.ru/download/bank/download')
+        self.assertTrue(responses.calls[0].request.url == self.URL)
         self.assertEqual(models.Bank.objects.count(), 0)
         WorkWithBanks.load_and_save_infoBank()
         counts_banks_for_end = models.Bank.objects.count()
